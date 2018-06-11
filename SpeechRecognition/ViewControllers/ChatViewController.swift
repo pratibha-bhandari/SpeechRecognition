@@ -25,10 +25,14 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
     private let audioEngine = AVAudioEngine()
     
     var synthesizer = AVSpeechSynthesizer()
-    var myUtterance = AVSpeechUtterance(string: "")
     
     let apiService = APIService()
     
+    var timer:Timer?
+    
+    var utteranceArray = [String]()
+    
+    //MARK: - View LifeCycle Methods
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -38,34 +42,6 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
         
         synthesizer.delegate = self
         
-//        let appDelegate  = UIApplication.shared.delegate as! AppDelegate
-//        let userActivityDict1 = NSDictionary(dictionary: ["text": "Hello", "from": ["id": appDelegate.user?.userID]])
-//        let userActivity1 = Activity(dictionary: userActivityDict1)
-//        self.msgsArray.append(userActivity1!)
-//
-//        let userActivityDict2 = NSDictionary(dictionary: ["text": "What is your first name?", "from": ["id": appDelegate.user?.userID]])
-//        let userActivity2 = Activity(dictionary: userActivityDict2)
-//        self.msgsArray.append(userActivity2!)
-//        self.msgsArray.append(userActivity2!)
-//        self.msgsArray.append(userActivity2!)
-//        self.msgsArray.append(userActivity2!)
-//        self.msgsArray.append(userActivity2!)
-//        self.msgsArray.append(userActivity2!)
-//        self.msgsArray.append(userActivity2!)
-//        self.msgsArray.append(userActivity2!)
-//        self.msgsArray.append(userActivity2!)
-//        self.msgsArray.append(userActivity2!)
-//        self.msgsArray.append(userActivity2!)
-//        self.msgsArray.append(userActivity2!)
-//        self.msgsArray.append(userActivity2!)
-//        self.msgsArray.append(userActivity2!)
-//        self.msgsArray.append(userActivity2!)
-        
-        //msgsArray.append("Hello")
-        //msgsArray.append("What is your first name?")
-        
-        //print("voice message label text status",self.voiceMessage.text?.isEmpty as Any)
-        
         if speechRecognizer == nil
         {
             print("Not supported")
@@ -73,7 +49,7 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
         let myRecognizer = SFSpeechRecognizer()
         if myRecognizer?.isAvailable == false
         {
-            print("NOt available")
+            print("Not available")
         }
         startStopButton.isEnabled = false
         speechRecognizer?.delegate = self
@@ -101,29 +77,43 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
             }
             
         }
-        do {
-            try AVAudioSession.sharedInstance().setCategory(
-                AVAudioSessionCategoryPlayback,
-                with: AVAudioSessionCategoryOptions.mixWithOthers
-            )
-            self.myUtterance = AVSpeechUtterance(string: "Welcome to the ChatBot")
-            self.myUtterance.rate = AVSpeechUtteranceDefaultSpeechRate
-            let lang = "en-US"
-            self.synthesizer.continueSpeaking()
-            self.myUtterance.voice = AVSpeechSynthesisVoice(language: lang)
-            self.synthesizer.continueSpeaking()
-            self.synthesizer.speak(self.myUtterance)
-        } catch {
-            print(error)
-        }
+        
         apiService.getConversationIdFromService { (response) in
             //            OperationQueue.main.addOperation() {
             //                self.startStopButton.isEnabled = isButtonEnabled
             //            }
         }
+        
+        startNewSpeech(self.startStopButton)
+    }
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+
+    //MARK: - SFSpeechRecognizerDelegate
+    func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool)
+    {
+        if available {
+            startStopButton.isEnabled = true
+        } else {
+            startStopButton.isEnabled = false
+        }
     }
     
-    
+    //MARK: - IBActions
+    // Method for Start speech
+    @IBAction func startNewSpeech(_ sender: UIButton){
+        if sender.titleLabel?.text == "Start" {
+            
+            speechStarted()
+            print("User start to speak")
+        } else {
+            speechEnded()
+            
+        }
+    }
+    //MARK: - Other Methods
     func startRecording()
     {
         if recognitionTask != nil {
@@ -177,6 +167,7 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
                 self.recognitionRequest = nil
                 self.recognitionTask = nil
                 self.startStopButton.isEnabled = true
+                //print("error -- \(error.)")
             }
         })
         
@@ -189,90 +180,88 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
         do
         {
             try audioEngine.start()
+            self.timer?.invalidate()
+            self.timer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(ChatViewController.speechEnded), userInfo: nil, repeats: false)
         } catch
         {
             print("audioEngine couldn't start because of an error.")
         }
-        
     }
-    
-    func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool)
-    {
-        if available {
-            startStopButton.isEnabled = true
-        } else {
-            startStopButton.isEnabled = false
-        }
+
+    func speechStarted(){
+        self.startStopButton.setTitle("Stop", for: .normal)
+        self.bestString = ""
+        startRecording()
     }
-    
-    // Method for Start speech
-    @IBAction func startNewSpeech(_ sender: UIButton){
-        if sender.titleLabel?.text == "Start" {
-            self.startStopButton.setTitle("Stop", for: .normal)
-            self.bestString = ""
-            startRecording()
-            print("User start to speak")
-        } else {
-            if audioEngine.isRunning {
-                print("User stops to speak")
-                audioEngine.stop()
-                recognitionRequest?.endAudio()
-                print("full speak message is",self.bestString)
+    func speechEnded(){
+        print("User finished talking")
+        self.startStopButton.setTitle("Start", for: .normal)
+        if audioEngine.isRunning {
+            print("User stops to speak")
+            audioEngine.stop()
+            recognitionRequest?.endAudio()
+            print("full speak message is",self.bestString)
+            
+            if self.bestString == "" {
                 
-                if self.bestString == "" {
+                self.textToSpeech(text: MSG.noInputMsg)
+                
+            }else {
+                let appDelegate  = UIApplication.shared.delegate as! AppDelegate
+                let userActivityDict = NSDictionary(dictionary: ["text": self.bestString, "from": ["id": appDelegate.user?.userID]])
+                let userActivity = Activity(dictionary: userActivityDict)
+                self.msgsArray.append(userActivity!)
+                DispatchQueue.main.async
+                    {
+                        self.tableView.reloadData()
+                        self.startStopButton.isEnabled = false
+                        self.tableView.scrollToRow(at: IndexPath(item: self.msgsArray.count-1, section: 0),at: .bottom, animated: false)
+                        
+                }
+                apiService.sendMessage(msgString: self.bestString, completionHandler: { (json) in
+                    //print(json)
+                    let responseArray = json.value(forKey:"activities") as! NSArray
+                    print("Outcome array is %@",responseArray)
                     
-                    self.textToSpeech(text: "We have not received any input")
+                    self.msgsArray.removeAll()
+                    for activityDict in responseArray {
+                        let activity = Activity(dictionary: activityDict as! NSDictionary)
+                        self.msgsArray.append(activity!)
+                    }
+                    var utterArray = [String]();
+                    for activity in self.msgsArray.reversed() {
+                        let fromUserID = activity.from!["id"] as! String
+                        
+                        //Check is the msg is from server
+                        if fromUserID != appDelegate.user?.userID {
+                            utterArray.append(activity.text!)
+                        } else {
+                            break
+                        }
+                    }
+                    self.setupTextToSpeech(stringArray: utterArray.reversed())
+                    //self.textToSpeech(text: (self.msgsArray.last?.text)!)
                     
-                }else {
-                    let appDelegate  = UIApplication.shared.delegate as! AppDelegate
-                    let userActivityDict = NSDictionary(dictionary: ["text": self.bestString, "from": ["id": appDelegate.user?.userID]])
-                    let userActivity = Activity(dictionary: userActivityDict)
-                    self.msgsArray.append(userActivity!)
                     DispatchQueue.main.async
                         {
                             self.tableView.reloadData()
-                            self.startStopButton.isEnabled = false
+                            self.startStopButton.isEnabled = true
+                            
                             self.tableView.scrollToRow(at: IndexPath(item: self.msgsArray.count-1, section: 0),at: .bottom, animated: true)
-
                     }
-                    apiService.sendMessage(msgString: self.bestString, completionHandler: { (json) in
-                        print(json)
-                        let responseArray = json.value(forKey:"activities") as! NSArray
-                        print("Outcome array is %@",responseArray)
-
-                        self.msgsArray.removeAll()
-                        for activityDict in responseArray {
-                            let activity = Activity(dictionary: activityDict as! NSDictionary)
-                            self.msgsArray.append(activity!)
-                        }
-                        
-                        self.textToSpeech(text: (self.msgsArray.last?.text)!)
-                        
-                        DispatchQueue.main.async
-                            {
-                                self.tableView.reloadData()
-                                self.startStopButton.isEnabled = true
-                                
-                                self.tableView.scrollToRow(at: IndexPath(item: self.msgsArray.count-1, section: 0),at: .bottom, animated: true)
-                                
-                        }
-                    })
-
-                }            }
-            self.startStopButton.setTitle("Start", for: .normal)
+                })
+            }
         }
     }
-    
-    @IBAction func stoprecordedSpeech(_ sender: Any)
-    {
-        
+    func setupTextToSpeech(stringArray: [String]){
+        for string in stringArray {
+            let stringsArray = string.components(separatedBy: NSCharacterSet.newlines)
+            let filteredStringsArray = stringsArray.filter{ !$0.isEmpty }
+            utteranceArray.append(contentsOf: filteredStringsArray)
+        }
+        textToSpeech(text: utteranceArray.first!)
+        utteranceArray.removeFirst()
     }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     /*
      Method to convert text to speech
      */
@@ -284,6 +273,9 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
             )
             let utterance = AVSpeechUtterance(string: text)
             utterance.rate = AVSpeechUtteranceDefaultSpeechRate
+            utterance.postUtteranceDelay = 1.0
+            //utterance.postUtteranceDelay = 0.005
+
             let lang = "en-US"
             self.synthesizer.continueSpeaking()
             utterance.voice = AVSpeechSynthesisVoice(language: lang)
@@ -294,8 +286,7 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
         }
     }
     
-    /*
-     // MARK: - Navigation
+    /*// MARK: - Navigation
      
      // In a storyboard-based application, you will often want to do a little preparation before navigation
      override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -304,21 +295,28 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
      }
      */
     
-    
+    //MARK: - AVSpeechSynthesizer Delegate
     public func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance){
         print("speechSynthesizer - didStart")
     }
     
     public func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance){
         print("speechSynthesizer - didFinish")
-        if (self.synthesizer != nil && self.synthesizer.isSpeaking) {
+        if (self.synthesizer.isSpeaking) {
             
             self.synthesizer.stopSpeaking(at: .immediate);
             print("synthesizer -- stop")
             
         }
-        
-        //self.synthesizer = nil;
+        print("utteranceArray -- \(utteranceArray)")
+        if utteranceArray.count > 0{
+            textToSpeech(text: utteranceArray.first!)
+            utteranceArray.removeFirst()
+        } else if utterance.speechString != MSG.noInputMsg {
+            startNewSpeech(self.startStopButton)
+        } else {
+            print("No input received")
+        }
     }
     
     public func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didPause utterance: AVSpeechUtterance){
