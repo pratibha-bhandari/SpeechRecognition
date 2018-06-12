@@ -20,6 +20,7 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
     var bestString : String = ""
     var status = false
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale.init(identifier: "en-US"))
+    //private let speechRecognizer = SFSpeechRecognizer(locale: Locale.init(identifier: "de-CH"))
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
     private let audioEngine = AVAudioEngine()
@@ -181,7 +182,7 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
         {
             try audioEngine.start()
             self.timer?.invalidate()
-            self.timer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(ChatViewController.speechEnded), userInfo: nil, repeats: false)
+            self.timer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(ChatViewController.speechEnded), userInfo: nil, repeats: false)
         } catch
         {
             print("audioEngine couldn't start because of an error.")
@@ -200,6 +201,7 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
             print("User stops to speak")
             audioEngine.stop()
             recognitionRequest?.endAudio()
+            //audioEngine.inputNode?.removeTap(onBus: 0)
             print("full speak message is",self.bestString)
             
             if self.bestString == "" {
