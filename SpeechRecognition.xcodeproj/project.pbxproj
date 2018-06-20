@@ -7,13 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		840AA2B420D221CB006CDD80 /* FormWithTableviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840AA2B320D221CB006CDD80 /* FormWithTableviewViewController.swift */; };
+		840AA2B620D22679006CDD80 /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840AA2B520D22679006CDD80 /* Question.swift */; };
+		840AA2B820D228E1006CDD80 /* FormFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840AA2B720D228E1006CDD80 /* FormFieldTableViewCell.swift */; };
+		840C32AE20CF7FFD00A92490 /* FormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840C32AD20CF7FFD00A92490 /* FormViewController.swift */; };
+		840C32B020CF9C5100A92490 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840C32AF20CF9C5100A92490 /* DataService.swift */; };
+		84365D5220D0EAF1004DAD5B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84365D5120D0EAF1004DAD5B /* Extensions.swift */; };
 		844C6C7520C7EA4A009B63A6 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844C6C7420C7EA4A009B63A6 /* ChatViewController.swift */; };
 		844C6C7820C7F50D009B63A6 /* MsgTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844C6C7720C7F50D009B63A6 /* MsgTableViewCell.swift */; };
 		848AFD4020C900DF006B731F /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848AFD3F20C900DF006B731F /* Activity.swift */; };
 		848AFD4220C90D6F006B731F /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848AFD4120C90D6F006B731F /* User.swift */; };
 		A368BF0B20C6C22C009DF182 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A368BF0A20C6C22C009DF182 /* APIService.swift */; };
 		A368BF0E20C6C2A2009DF182 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A368BF0D20C6C2A2009DF182 /* Constants.swift */; };
-		A368BF1220C6DE22009DF182 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = A368BF1120C6DE22009DF182 /* Data.swift */; };
 		B32DCE3620B52EDE00063E6D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32DCE3520B52EDE00063E6D /* AppDelegate.swift */; };
 		B32DCE3820B52EDE00063E6D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32DCE3720B52EDE00063E6D /* ViewController.swift */; };
 		B32DCE3B20B52EDE00063E6D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B32DCE3920B52EDE00063E6D /* Main.storyboard */; };
@@ -42,13 +47,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		840AA2B320D221CB006CDD80 /* FormWithTableviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormWithTableviewViewController.swift; sourceTree = "<group>"; };
+		840AA2B520D22679006CDD80 /* Question.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
+		840AA2B720D228E1006CDD80 /* FormFieldTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormFieldTableViewCell.swift; sourceTree = "<group>"; };
+		840C32AD20CF7FFD00A92490 /* FormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormViewController.swift; sourceTree = "<group>"; };
+		840C32AF20CF9C5100A92490 /* DataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
+		84365D5120D0EAF1004DAD5B /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		844C6C7420C7EA4A009B63A6 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		844C6C7720C7F50D009B63A6 /* MsgTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MsgTableViewCell.swift; sourceTree = "<group>"; };
 		848AFD3F20C900DF006B731F /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		848AFD4120C90D6F006B731F /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		A368BF0A20C6C22C009DF182 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		A368BF0D20C6C2A2009DF182 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		A368BF1120C6DE22009DF182 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		B32DCE3220B52EDE00063E6D /* SpeechRecognition.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpeechRecognition.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B32DCE3520B52EDE00063E6D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B32DCE3720B52EDE00063E6D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -94,6 +104,8 @@
 			isa = PBXGroup;
 			children = (
 				844C6C7420C7EA4A009B63A6 /* ChatViewController.swift */,
+				840C32AD20CF7FFD00A92490 /* FormViewController.swift */,
+				840AA2B320D221CB006CDD80 /* FormWithTableviewViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -102,6 +114,7 @@
 			isa = PBXGroup;
 			children = (
 				844C6C7720C7F50D009B63A6 /* MsgTableViewCell.swift */,
+				840AA2B720D228E1006CDD80 /* FormFieldTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -110,6 +123,7 @@
 			isa = PBXGroup;
 			children = (
 				A368BF0A20C6C22C009DF182 /* APIService.swift */,
+				840C32AF20CF9C5100A92490 /* DataService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -118,6 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				A368BF0D20C6C2A2009DF182 /* Constants.swift */,
+				84365D5120D0EAF1004DAD5B /* Extensions.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -125,9 +140,9 @@
 		A368BF1020C6C6EB009DF182 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				A368BF1120C6DE22009DF182 /* Data.swift */,
 				848AFD3F20C900DF006B731F /* Activity.swift */,
 				848AFD4120C90D6F006B731F /* User.swift */,
+				840AA2B520D22679006CDD80 /* Question.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -257,7 +272,7 @@
 				TargetAttributes = {
 					B32DCE3120B52EDE00063E6D = {
 						CreatedOnToolsVersion = 9.2;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 					B32DCE4820B52EDF00063E6D = {
 						CreatedOnToolsVersion = 9.2;
@@ -324,14 +339,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				A368BF0E20C6C2A2009DF182 /* Constants.swift in Sources */,
-				A368BF1220C6DE22009DF182 /* Data.swift in Sources */,
+				840C32AE20CF7FFD00A92490 /* FormViewController.swift in Sources */,
+				840AA2B420D221CB006CDD80 /* FormWithTableviewViewController.swift in Sources */,
+				840C32B020CF9C5100A92490 /* DataService.swift in Sources */,
 				844C6C7520C7EA4A009B63A6 /* ChatViewController.swift in Sources */,
+				840AA2B620D22679006CDD80 /* Question.swift in Sources */,
 				844C6C7820C7F50D009B63A6 /* MsgTableViewCell.swift in Sources */,
 				B32DCE3820B52EDE00063E6D /* ViewController.swift in Sources */,
 				A368BF0B20C6C22C009DF182 /* APIService.swift in Sources */,
+				84365D5220D0EAF1004DAD5B /* Extensions.swift in Sources */,
 				848AFD4020C900DF006B731F /* Activity.swift in Sources */,
 				B32DCE3E20B52EDE00063E6D /* SpeechRecognition.xcdatamodeld in Sources */,
 				848AFD4220C90D6F006B731F /* User.swift in Sources */,
+				840AA2B820D228E1006CDD80 /* FormFieldTableViewCell.swift in Sources */,
 				B32DCE3620B52EDE00063E6D /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -416,7 +436,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Carey International, Inc.";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -473,7 +493,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Carey International, Inc.";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -498,13 +518,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = V5848K5X7Q;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Carey International, Inc.";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Carey International, Inc.";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = N6L8987864;
 				INFOPLIST_FILE = SpeechRecognition/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.my.SpeechRecognition;
+				PRODUCT_BUNDLE_IDENTIFIER = com.carey.Demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "9c92b821-9317-41d6-8330-c853abb0c0f1";
+				PROVISIONING_PROFILE_SPECIFIER = Demo;
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -514,13 +538,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = V5848K5X7Q;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Carey International, Inc.";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Carey International, Inc.";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = N6L8987864;
 				INFOPLIST_FILE = SpeechRecognition/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.my.SpeechRecognition;
+				PRODUCT_BUNDLE_IDENTIFIER = com.carey.Demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "9c92b821-9317-41d6-8330-c853abb0c0f1";
+				PROVISIONING_PROFILE_SPECIFIER = Demo;
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

@@ -11,10 +11,8 @@ import UIKit
 
 typealias CompletionHandler = (_ response:NSDictionary) -> Void
 
-
 class APIService: NSObject
 {
-    var dataobject :Data = Data()
     
     // Method to get conversation id from server
     func getConversationIdFromService(completionHandler :@escaping CompletionHandler)
@@ -33,6 +31,9 @@ class APIService: NSObject
             if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {           // check for http errors
                 print("statusCode should be 200, but is \(httpStatus.statusCode)")
                 print("response = \(String(describing: response))")
+                //let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                //appDelegate.user?.conversationID = "7BDMBKhbXACBznzJjnMOWp"
+                //7BDMBKhbXACBznzJjnMOWp
             }
             let responseString = String(data: data, encoding: .utf8)
             print("responseString = \(String(describing: responseString))")
@@ -43,8 +44,12 @@ class APIService: NSObject
                 jsonObject = try JSONSerialization.jsonObject(with: jsondata!) as Any
                 if let obj = jsonObject as? NSDictionary {
                     print(obj["conversationId"] ?? (Any).self)
-                    self.dataobject.conversationid = obj.value(forKey:"conversationId") as! String
-                    completionHandler(jsonObject as! NSDictionary)
+                    DispatchQueue.main.async {
+                        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                        appDelegate.user?.conversationID = obj.value(forKey:"conversationId") as? String
+                        completionHandler(jsonObject as! NSDictionary)
+
+                    }
                 }
             } catch {
                 print("error")
@@ -61,10 +66,10 @@ class APIService: NSObject
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         
         let userID = appDelegate.user?.userID
-        
-        print(dataobject.conversationid)
+        print(appDelegate.user?.conversationID ?? "default")
+        let conversationID = appDelegate.user?.conversationID!
         // Send message
-        let Url = String(format:API.baseURL + "/\(self.dataobject.conversationid)/activities")
+        let Url = String(format:API.baseURL + "/\(conversationID!)/activities")
         guard let serviceUrl = URL(string: Url) else { return }
         var parameterDictionary: Dictionary = [String: Any]()
         var dictionaryData: Dictionary = [String: Any]()
@@ -104,7 +109,13 @@ class APIService: NSObject
     {
         //print(conversationid)
         // Send message
-        let Url = String(format: API.baseURL + "/\(self.dataobject.conversationid)/activities")
+        var appDelegate: AppDelegate? = nil
+        DispatchQueue.main.async{
+            appDelegate = UIApplication.shared.delegate as? AppDelegate
+        }
+        
+        let conversationID = appDelegate?.user?.conversationID!
+        let Url = String(format: API.baseURL + "/\(conversationID!)/activities")
         guard let serviceUrl = URL(string: Url) else { return }
         var requestThird = URLRequest(url: serviceUrl)
         requestThird.httpMethod = "GET"
@@ -128,7 +139,6 @@ class APIService: NSObject
             }
             }.resume()
     }
-    
 }
 
 

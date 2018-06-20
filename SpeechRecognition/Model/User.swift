@@ -10,4 +10,5 @@ import UIKit
 
 class User: NSObject {
     var userID: String?
+    var conversationID: String?
 }

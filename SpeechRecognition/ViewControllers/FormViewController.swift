@@ -1,8 +1,8 @@
 //
-//  ChatViewController.swift
+//  FormViewController.swift
 //  SpeechRecognition
 //
-//  Created by Admin on 06/06/18.
+//  Created by Admin on 12/06/18.
 //  Copyright © 2018 DB. All rights reserved.
 //
 
@@ -10,11 +10,16 @@ import UIKit
 import Speech
 import AVFoundation
 
-class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeechSynthesizerDelegate {
+class FormViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeechSynthesizerDelegate {
     
     @IBOutlet weak var startStopButton: UIButton!
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var firstNameTxtFld: UITextField!
+    @IBOutlet weak var lastNameTxtFld: UITextField!
+    @IBOutlet weak var genderTxtFld: UITextField!
+    @IBOutlet weak var companyTxtFld: UITextField!
+    @IBOutlet weak var selectionTxtFld: UITextField!
     
+    @IBOutlet weak var msgLabel: UILabel!
     var activitiesArray = [Activity]()
     
     var bestString : String = ""
@@ -37,9 +42,6 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 44.0
         
         synthesizer.delegate = self
         
@@ -84,14 +86,21 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
             //                self.startStopButton.isEnabled = isButtonEnabled
             //            }
         }
-        activitiesArray = DataService.sharedInstance.activities
+        //Getting data from UserDefaults
+//                if (UserDefaults.standard.value(forKey: "activities") != nil) {
+//                    let decoded  = UserDefaults.standard.value(forKey: "activities") as! Data
+//                    self.activitiesArray = NSKeyedUnarchiver.unarchiveObject(with: decoded) as! [Activity]
+//                }
+        //Getting data from document directory
+        //self.activitiesArray = DataService.sharedInstance.activities
+        //self.displayAnswers(lastOnly: false)
         startNewSpeech(self.startStopButton)
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
     //MARK: - SFSpeechRecognizerDelegate
     func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool)
     {
@@ -103,7 +112,9 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
     }
     
     //MARK: - IBActions
-    // Method for Start speech
+    /*
+    Method for Start speech
+     */
     @IBAction func startNewSpeech(_ sender: UIButton){
         if sender.titleLabel?.text == "Start" {
             
@@ -115,6 +126,10 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
         }
     }
     //MARK: - Other Methods
+    
+    /*
+     Method to start audioEngine
+     */
     func startRecording()
     {
         if recognitionTask != nil {
@@ -168,7 +183,6 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
                 self.recognitionRequest = nil
                 self.recognitionTask = nil
                 self.startStopButton.isEnabled = true
-                //print("error -- \(error.)")
             }
         })
         
@@ -188,12 +202,18 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
             print("audioEngine couldn't start because of an error.")
         }
     }
-
+    /*
+     Method to start Recording for user speech
+     */
     func speechStarted(){
         self.startStopButton.setTitle("Stop", for: .normal)
         self.bestString = ""
         startRecording()
     }
+    
+    /*
+     Method to get speak message and send to the API
+     */
     func speechEnded(){
         print("User finished talking")
         self.startStopButton.setTitle("Start", for: .normal)
@@ -201,7 +221,7 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
             print("User stops to speak")
             audioEngine.stop()
             recognitionRequest?.endAudio()
-            //audioEngine.inputNode?.removeTap(onBus: 0)
+            audioEngine.inputNode?.removeTap(onBus: 0)
             print("full speak message is",self.bestString)
             
             if self.bestString == "" {
@@ -210,59 +230,142 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
                 
             }else {
                 let appDelegate  = UIApplication.shared.delegate as! AppDelegate
-                let userActivityDict = NSDictionary(dictionary: ["text": self.bestString, "from": ["id": appDelegate.user?.userID]])
                 let userActivity = Activity(type: "message", id: "", timestamp: "", serviceUrl: "", channelId: (appDelegate.user?.conversationID)!, from: ["id": appDelegate.user?.userID ?? ""], conversation: [:], text: self.bestString)
                 self.activitiesArray.append(userActivity)
+                for msg in self.activitiesArray {
+                    print("msg -- \(String(describing: msg.text))")
+                }
                 DispatchQueue.main.async
                 {
-                        self.tableView.reloadData()
+                        self.displayAnswers(lastOnly: true)
                         self.startStopButton.isEnabled = false
-                        self.tableView.scrollToRow(at: IndexPath(item: self.activitiesArray.count-1, section: 0),at: .bottom, animated: false)
-                        
                 }
                 apiService.sendMessage(msgString: self.bestString, completionHandler: { (json) in
                     //print(json)
-                    let responseArray = json.value(forKey:"activities") as! NSArray
-                    print("Outcome array is %@",responseArray)
-                    
-                    self.activitiesArray.removeAll()
-                    for activityDict in responseArray {
-                        let activity = Activity(type: "", id: "", timestamp: "", serviceUrl: "", channelId: "", from: [:], conversation: [:], text: "")//Activity(dictionary: activityDict as! NSDictionary)
-                        self.activitiesArray.append(activity)
-                    }
-                    var utterArray = [String]();
-                    for activity in self.activitiesArray.reversed() {
-                        let fromUserID = activity.from!["id"] as! String
+                    if (json.value(forKey:"error") != nil) {
+                        print("Error -- \(String(describing: json.value(forKey:"error")))")
+                    } else {
+                        let responseArray = json.value(forKey:"activities") as! NSArray
+                        print("Outcome array is %@",responseArray)
                         
-                        //Check is the msg is from server
-                        if fromUserID != appDelegate.user?.userID {
-                            utterArray.append(activity.text!)
-                        } else {
-                            break
+                        self.activitiesArray.removeAll()
+                        
+                        for activityDict in responseArray {
+                            let dict = activityDict as? NSDictionary
+                            if let type = dict!["type"] as? String,
+                                let id = dict!["id"] as? String,
+                                let timestamp = dict!["timestamp"] as? String,
+                                //let serviceUrl = dict!["serviceUrl"] as? String,
+                                let channelId = dict!["channelId"] as? String,
+                                let from = dict!["from"] as? Dictionary<String, Any>,
+                                let conversation = dict!["conversation"] as? Dictionary<String, Any>{
+                                var text = ""
+                                if dict!["text"] as? String == "" {
+                                    
+                                    let attachmentsArray = dict!.object(forKey:"attachments") as! NSArray
+                                    let attachmentDict = attachmentsArray.firstObject as! NSDictionary
+                                    let contentDict = attachmentDict["content"] as! NSDictionary
+                                    text = (contentDict["text"] as? String)!
+                                    
+                                } else {
+                                    text = (dict!["text"] as? String)!
+                                }
+                                let activity = Activity(type: type, id: id, timestamp: timestamp, serviceUrl: "", channelId: channelId, from: from, conversation: conversation, text: text)
+                                self.activitiesArray.append(activity)
+                            }
                         }
-                    }
-                    self.setupTextToSpeech(stringArray: utterArray.reversed())
-                    //self.textToSpeech(text: (self.activitiesArray.last?.text)!)
-                    
-                    DispatchQueue.main.async
-                        {
-                            self.tableView.reloadData()
-                            self.startStopButton.isEnabled = true
+                        
+                        //Saving activities in user defaults
+                        let encodedData = NSKeyedArchiver.archivedData(withRootObject: self.activitiesArray)
+                        let userDefaults = UserDefaults.standard
+                        userDefaults.set(encodedData, forKey: "activities")
+                        
+                        //Saving activities in a file in documents directory
+                        //DataService.sharedInstance.saveData(item: self.activitiesArray)
+                        var utterArray = [String]();
+                        for activity in self.activitiesArray.reversed() {
+                            let fromUserID = activity.from!["id"] as! String
                             
-                            self.tableView.scrollToRow(at: IndexPath(item: self.activitiesArray.count-1, section: 0),at: .bottom, animated: true)
+                            //Check is the msg is from server
+                            if fromUserID != appDelegate.user?.userID {
+                                utterArray.append(activity.text!)
+                            } else {
+                                  break
+                            }
+                        }
+                        self.setupTextToSpeech(stringArray: utterArray.reversed())
+                        //self.textToSpeech(text: (self.activitiesArray.last?.text)!)
+                        
+                        DispatchQueue.main.async
+                            {
+                                if self.activitiesArray.last?.text?.lowercased().range(of:"profile is complete") != nil{
+                                    self.msgLabel.text = self.activitiesArray.last?.text
+                                    self.audioEngine.stop()
+                                    self.recognitionRequest?.endAudio()
+                                    self.audioEngine.inputNode?.removeTap(onBus: 0)
+                                }
+                                self.startStopButton.isEnabled = true
+                        }
                     }
                 })
             }
         }
     }
+    
+    /*
+     Method to update answers on UI
+     */
+    func displayAnswers(lastOnly:Bool) {
+        let appDelegate  = UIApplication.shared.delegate as! AppDelegate
+        if self.activitiesArray.count > 1 {
+            
+            var lastQuestionActivity: Activity?
+            for activity in self.activitiesArray.reversed() {
+                let fromUserID = activity.from!["id"] as! String
+                print("activity -- \(String(describing: activity.text))")
+                
+                //Check is the msg is from server
+                if fromUserID != appDelegate.user?.userID {
+                    lastQuestionActivity = activity
+                    if lastQuestionActivity?.text?.lowercased().range(of:"first name?") != nil {
+                        self.firstNameTxtFld.text = self.activitiesArray.next(item: lastQuestionActivity!)?.text//self.activitiesArray.last?.text
+                    }
+                    else if lastQuestionActivity?.text?.lowercased().range(of:"last name?") != nil {
+                        self.lastNameTxtFld.text = self.activitiesArray.next(item: lastQuestionActivity!)?.text//self.activitiesArray.last?.text
+                    }
+                    else if (lastQuestionActivity?.text?.lowercased().range(of:"gender?") != nil) || lastQuestionActivity?.text?.lowercased().range(of:"gender option.") != nil {
+                        self.genderTxtFld.text = self.activitiesArray.next(item: lastQuestionActivity!)?.text//self.activitiesArray.last?.text
+                    }
+                    else if lastQuestionActivity?.text?.lowercased().range(of:"company?") != nil {
+                        self.companyTxtFld.text = self.activitiesArray.next(item: lastQuestionActivity!)?.text//self.activitiesArray.last?.text
+                    }
+                    else if lastQuestionActivity?.text?.lowercased().range(of:"selection?") != nil {
+                        self.selectionTxtFld.text = self.activitiesArray.next(item: lastQuestionActivity!)?.text//self.activitiesArray.last?.text
+                    } else if lastQuestionActivity?.text?.lowercased().range(of:"profile is complete") != nil{
+                        //self.msgLabel.text = self.activitiesArray.last?.text
+                        //self.msgLabel.text = "Hello"
+                        print("Else")
+                    }
+                    if lastOnly {
+                        break
+                    }
+                }
+            }
+        }
+    }
+    /*
+     Method to setup multiline text for speech
+     */
     func setupTextToSpeech(stringArray: [String]){
         for string in stringArray {
             let stringsArray = string.components(separatedBy: NSCharacterSet.newlines)
             let filteredStringsArray = stringsArray.filter{ !$0.isEmpty }
             utteranceArray.append(contentsOf: filteredStringsArray)
         }
-        textToSpeech(text: utteranceArray.first!)
-        utteranceArray.removeFirst()
+        if utteranceArray.count > 0 {
+            textToSpeech(text: utteranceArray.first!)
+            utteranceArray.removeFirst()
+        }
     }
     /*
      Method to convert text to speech
@@ -277,7 +380,7 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
             utterance.rate = AVSpeechUtteranceDefaultSpeechRate
             utterance.postUtteranceDelay = 1.0
             //utterance.postUtteranceDelay = 0.005
-
+            
             let lang = "en-US"
             self.synthesizer.continueSpeaking()
             utterance.voice = AVSpeechSynthesisVoice(language: lang)
@@ -298,17 +401,10 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
      */
     
     //MARK: - AVSpeechSynthesizer Delegate
-    public func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance){
-        print("speechSynthesizer - didStart")
-    }
-    
     public func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance){
         print("speechSynthesizer - didFinish")
         if (self.synthesizer.isSpeaking) {
-            
             self.synthesizer.stopSpeaking(at: .immediate);
-            print("synthesizer -- stop")
-            
         }
         print("utteranceArray -- \(utteranceArray)")
         if utteranceArray.count > 0{
@@ -320,44 +416,27 @@ class ChatViewController: UIViewController, SFSpeechRecognizerDelegate, AVSpeech
             print("No input received")
         }
     }
-    
-    public func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didPause utterance: AVSpeechUtterance){
-        print("speechSynthesizer - didPause")
-    }
-    
-    public func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didContinue utterance: AVSpeechUtterance){
-        print("speechSynthesizer - didContinue")
-    }
-    
-    public func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance){
-        print("speechSynthesizer - didCancel")
-    }
-    
-    public func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, willSpeakRangeOfSpeechString characterRange: NSRange, utterance: AVSpeechUtterance){
-        print("speechSynthesizer - willSpeakRangeOfSpeechString -- \(utterance.speechString)")
-    }
 }
-extension ChatViewController: UITableViewDataSource {
+extension FormViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.activitiesArray.count
+        return activitiesArray.count
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
     
-    func tableView(_ tableView: UITableView,
-                   cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath as IndexPath) as! MsgTableViewCell
         let appDelegate  = UIApplication.shared.delegate as! AppDelegate
         
         //Get activity for the cell
-        let activity = self.activitiesArray[indexPath.row] as Activity
+        let activity = activitiesArray[indexPath.row] as Activity
         cell.msgLabel?.text = activity.text
         let fromUserID = activity.from!["id"] as! String
         
-        //Customizing cell by checking msgs of current 
+        //Customizing cell by checking msgs of current user
         if fromUserID == appDelegate.user?.userID {
             cell.msgLabel.textAlignment = .right
             cell.msgLabel.textColor = UIColor.white
@@ -371,3 +450,5 @@ extension ChatViewController: UITableViewDataSource {
         return cell
     }
 }
+
+
