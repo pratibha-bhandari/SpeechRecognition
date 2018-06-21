@@ -12,6 +12,7 @@
 		840AA2B820D228E1006CDD80 /* FormFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840AA2B720D228E1006CDD80 /* FormFieldTableViewCell.swift */; };
 		840C32AE20CF7FFD00A92490 /* FormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840C32AD20CF7FFD00A92490 /* FormViewController.swift */; };
 		840C32B020CF9C5100A92490 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840C32AF20CF9C5100A92490 /* DataService.swift */; };
+		843131D920DB688000B7E2D6 /* fastlane in Resources */ = {isa = PBXBuildFile; fileRef = 843131D820DB688000B7E2D6 /* fastlane */; };
 		84365D5220D0EAF1004DAD5B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84365D5120D0EAF1004DAD5B /* Extensions.swift */; };
 		844C6C7520C7EA4A009B63A6 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844C6C7420C7EA4A009B63A6 /* ChatViewController.swift */; };
 		844C6C7820C7F50D009B63A6 /* MsgTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844C6C7720C7F50D009B63A6 /* MsgTableViewCell.swift */; };
@@ -52,6 +53,7 @@
 		840AA2B720D228E1006CDD80 /* FormFieldTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormFieldTableViewCell.swift; sourceTree = "<group>"; };
 		840C32AD20CF7FFD00A92490 /* FormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormViewController.swift; sourceTree = "<group>"; };
 		840C32AF20CF9C5100A92490 /* DataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
+		843131D820DB688000B7E2D6 /* fastlane */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fastlane; sourceTree = SOURCE_ROOT; };
 		84365D5120D0EAF1004DAD5B /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		844C6C7420C7EA4A009B63A6 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		844C6C7720C7F50D009B63A6 /* MsgTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MsgTableViewCell.swift; sourceTree = "<group>"; };
@@ -170,6 +172,7 @@
 		B32DCE3420B52EDE00063E6D /* SpeechRecognition */ = {
 			isa = PBXGroup;
 			children = (
+				843131D820DB688000B7E2D6 /* fastlane */,
 				844C6C7620C7F4DA009B63A6 /* Views */,
 				844C6C7320C7EA03009B63A6 /* ViewControllers */,
 				A368BF0C20C6C26D009DF182 /* Utility */,
@@ -313,6 +316,7 @@
 			files = (
 				B32DCE4320B52EDE00063E6D /* LaunchScreen.storyboard in Resources */,
 				B32DCE4020B52EDE00063E6D /* Assets.xcassets in Resources */,
+				843131D920DB688000B7E2D6 /* fastlane in Resources */,
 				B32DCE3B20B52EDE00063E6D /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -560,7 +564,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = TN3QZKXQS6;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = SpeechRecognitionTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.deutschebahn.com.SpeechRecognitionTests;
@@ -577,7 +581,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = TN3QZKXQS6;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = SpeechRecognitionTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.deutschebahn.com.SpeechRecognitionTests;
